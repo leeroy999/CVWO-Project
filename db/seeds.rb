@@ -5,3 +5,6 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+tasks = ['Go shopping', 'Play Dota 2', 'Play Genshin Impact']
+tasks.each{|task| Task.create(title: task, description: "I have yet to #{task}.")}
