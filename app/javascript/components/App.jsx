@@ -40,7 +40,6 @@ class App extends React.Component {
         <Header categories = {this.state.categories} 
           addOpen = {() => this.handlePopup(true, "add", [])}
           handleCategory = {this.handleCategory}/>
-        <div style={{paddingTop: "60px"}}>
           <Body tasks = {this.state.tasks} 
             deleteOpen = {(task) => this.handlePopup(true, "delete", task)}
             updateOpen = {(task) => this.handlePopup(true, "update", task)}
@@ -53,7 +52,6 @@ class App extends React.Component {
             updateTask = {this.updateTask}
             updateOpen = {(task) => this.handlePopup(true, "update", task)}
             categories = {this.state.categories} />
-        </div>
       </div>
     );
   }
