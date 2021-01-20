@@ -5,7 +5,7 @@ class Api::V1::TasksController < ActionController::API
   end
 
   def create
-    task = Task.create(Task_params)
+    task = Task.create(task_params)
     render json: task
   end
 
@@ -15,13 +15,13 @@ class Api::V1::TasksController < ActionController::API
 
   def update
     task = Task.find(params[:id])
-    task.update_attributes(task_params)
+    task.update(task_params)
     render json: task
   end
 
   private
 
   def task_params
-    params.require(:task).permit(:id, :name, :description)
+    params.require(:task).permit(:id, :title, :description, :category)
   end
 end
