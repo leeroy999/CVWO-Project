@@ -51,6 +51,7 @@ class App extends React.Component {
             deleteTask = {this.deleteTask}
             updateTask = {this.updateTask}
             updateOpen = {(task) => this.handlePopup(true, "update", task)}
+            deleteOpen = {(task) => this.handlePopup(true, "delete", task)}
             categories = {this.state.categories} />
       </div>
     );

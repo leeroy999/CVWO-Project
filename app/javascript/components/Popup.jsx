@@ -86,7 +86,7 @@ class Popup extends React.Component {
         <Modal style = {{padding: '20px'}} open = {this.state.open} 
         onClose = {() => this.handleCancel(false)}>
           {this.state.operation === "delete" 
-            ? <h3>Are you sure you want to delete this task?</h3>
+            ? <h1 style = {{color: 'maroon'}}>Are you sure you want to delete this task?</h1>
             : <div>
                 <Button floated = 'right' icon = 'window close' onClick = {() => this.handleCancel(false)}/>
               </div>}
@@ -109,6 +109,9 @@ class Popup extends React.Component {
                   <GridColumn textAlign="center">
                     <Button type = 'edit' onClick = {() => this.props.updateOpen(this.props.popup.task)}>
                       <Icon name = 'edit'></Icon>Edit
+                    </Button>
+                    <Button type = 'delete' onClick = {() => this.props.deleteOpen(this.props.popup.task)}>
+                      <Icon name = 'trash alternate'></Icon>Delete
                     </Button>
                   </GridColumn>
                 </Grid>
