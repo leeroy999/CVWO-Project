@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Grid, GridColumn, Icon, Label } from "semantic-ui-react";
+import { Button, Grid, GridColumn, Icon} from "semantic-ui-react";
 
 class Body extends React.Component {
 

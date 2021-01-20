@@ -45,7 +45,7 @@ class Popup extends React.Component {
     if (this.state.operation === "add" || this.state.operation === "update") {
       return (
         <Modal open = {this.state.open} 
-          onClose = {this.props.closePopup}>
+          onClose = {() => this.state.operation === "add" ? this.handleCancel(true) : this.handleCancel(false)}>
           <Form style = {{padding: '20px'}}>
             <FormField>
               {this.state.operation === "add" 
@@ -77,18 +77,18 @@ class Popup extends React.Component {
             {this.state.operation === "add"
               ? <Button type = 'submit' onClick = {() => this.handleSubmit("add")}>Submit</Button>
               : <Button type = 'submit' onClick = {() => this.handleSubmit("update")}>Submit</Button>}
-            <Button type = 'cancel' onClick = {this.handleCancel}>Cancel</Button>
+            <Button type = 'cancel' onClick = {() => this.handleCancel(false)}>Cancel</Button>
           </Form>
         </Modal>
       );
     } else if (this.state.operation === "show" || this.state.operation === "delete") {
       return (
         <Modal style = {{padding: '20px'}} open = {this.state.open} 
-        onClose = {this.props.closePopup}>
+        onClose = {() => this.handleCancel(false)}>
           {this.state.operation === "delete" 
             ? <h3>Are you sure you want to delete this task?</h3>
             : <div>
-                <Button floated = 'right' icon = 'window close' onClick = {this.handleCancel}/>
+                <Button floated = 'right' icon = 'window close' onClick = {() => this.handleCancel(false)}/>
               </div>}
           <div style = {{overflowWrap: 'break-word' }}>
             <h3>Task Title: {this.state.task}</h3>
@@ -100,7 +100,7 @@ class Popup extends React.Component {
                 <Grid>
                   <GridColumn textAlign="center">
                     <Button type = 'yes' onClick = {this.handleDelete}>Yes</Button>
-                    <Button type = 'no' onClick = {this.handleCancel}>No</Button>
+                    <Button type = 'no' onClick = {() => this.handleCancel(false)}>No</Button>
                   </GridColumn>
                 </Grid>
               </div>
@@ -160,8 +160,10 @@ class Popup extends React.Component {
     }
   }
 
-  handleCancel = () => {
-    this.clearState();
+  handleCancel = (keepState) => {
+    if (!keepState) {
+      this.clearState();
+    }
     this.props.closePopup();
   }
 

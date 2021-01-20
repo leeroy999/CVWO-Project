@@ -1,5 +1,6 @@
+// Development command: foreman start
+
 import React from "react"
-import { Menu, Icon, MenuItem } from 'semantic-ui-react'
 import Body from "./Body"
 import Header from "./Header"
 import Popup from "./Popup"
