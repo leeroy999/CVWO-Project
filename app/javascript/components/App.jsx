@@ -122,7 +122,7 @@ class App extends React.Component {
     
   }
 
-  updateTask = (task) => {
+  updateTask = (task, prevCategory, isInCategories, isSameCategory) => {
     fetch(`api/v1/tasks/${task.id}`, 
     {
       method: 'PUT',
@@ -132,31 +132,21 @@ class App extends React.Component {
       body: JSON.stringify({task: task}),
     }).then(() => { 
       this.setState((oldState) => {
-        const tasks = oldState.tasks;
-        const categories = oldState.categories;
-        for (let i = 0; i < tasks.length; i++) {
-          if (tasks[i].id === task.id) {
-            tasks[i].title = task.title;
-            tasks[i].description = task.description;
-            if (tasks[i].category !== task.category) {
-              if (categories[tasks[i].category] - 1 <= 0) {
-                delete categories[tasks[i].category];
-              } else {
-                categories[tasks[i].category] -= 1;
-              }
-              if (categories[task.category]) {
-                categories[task.category] += 1;
-              } else {
-                categories[task.category] = 1;
-              }
-            }
-            tasks[i].category = task.category;
+        task.updated_at = new Date();
+        let tasks = oldState.tasks.filter((t) => t.id !== task.id);
+        let categories = oldState.categories;
+        if (!isInCategories) {
+          categories[task.category] = 1;
+        } else if (!isSameCategory) {
+          if (categories[prevCategory] - 1 <= 0) {
+            delete categories[prevCategory];
           }
-        }
-        return {
-          tasks: tasks,
+          categories[task.category] += 1;
+        } else {}
+        return ({
+          tasks: tasks.concat([task]),
           categories: categories
-        };
+        })
       });
     })
     .catch((error) => alert(error));

@@ -1,7 +1,7 @@
 # API controller
 class Api::V1::TasksController < ActionController::API
   def index
-    render json: Task.all
+    render json: Task.all.sort_by {|obj| obj.updated_at }
   end
 
   def create

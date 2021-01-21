@@ -157,7 +157,10 @@ class Popup extends React.Component {
         id: this.props.popup.task.id,
         title: this.state.task, 
         category: this.state.category, 
-        description: this.state.description});
+        description: this.state.description},
+        this.props.popup.task.category,
+        this.props.categories[this.state.category],
+        this.props.popup.task.category === this.state.category);
       this.clearState();
       this.props.closePopup();
     }
