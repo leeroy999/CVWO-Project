@@ -8,12 +8,13 @@ import Popup from "./Popup"
 class App extends React.Component {
 
   state = {
-    tasks: [],
-    categories: {},
-    category: "",
-    popup: {open: false, operation: "", task: []}
+    tasks: [], // array of task objects, from tasks API
+    categories: {}, // object {key: category, value: number of tasks in category}
+    category: "", // category in Header component, for filtering purpose
+    popup: {open: false, operation: "", task: []} // object passed into props of Popup component
   }
 
+  // After component mounts, fetches data from API and set it as state for (tasks) and (categories)
   componentDidMount(){
     fetch('/api/v1/tasks.json')
       .then((response) => {return response.json();})
@@ -57,19 +58,30 @@ class App extends React.Component {
     );
   }
 
+  // Setter for (category) state, for use to filter categories in Body component
   handleCategory = (cat) => {
     this.setState({
       category: cat
     });
   }
 
+  // Setter for (popup) state, for use in Popup component
+  /* Parameters:
+      open: toggles opening of the Modal in Popup component
+      operation: changes the type of form to be opened by the Modal in Popup component
+        --> CRUD OPERATIONS: (add, show, update, delete)
+      task: sets the fields in the form, namely the TASK TITLE, CATEGORY, and DESCRIPTION
+  */
   handlePopup = (open, operation, task) => {
     this.setState({
       popup: {open: open, operation: operation, task: task}
     });
   }
 
-  // JSON: {title: task, category: category, description: description}
+  /* Create task by 
+  - adding it to tasks API via POST method
+  - adding it to (categories) and (tasks) state
+  */
   addTask = (task, category, description) => {
     let body = JSON.stringify({task: {title: task, description: description, category: category}});
     fetch('/api/v1/tasks', {
@@ -88,7 +100,7 @@ class App extends React.Component {
             categories[category] = 1;
           }
           return {
-            tasks: oldState.tasks.concat(data),
+            tasks: oldState.tasks.concat(data), // new array created, results in re-render and componentDidUpdate in various components
             categories: categories
           };
         });
@@ -96,6 +108,10 @@ class App extends React.Component {
       .catch((error) => alert(error));
   }
 
+  /* Destroy task by:
+  - deleting it from tasks API via DELETE method on the task.id
+  - removing it from (tasks) and (categories) state
+  */
   deleteTask = (task) => {
     fetch(`/api/v1/tasks/${task.id}`, 
     {
@@ -105,6 +121,7 @@ class App extends React.Component {
       }
     }).then(() => {
         this.setState((oldState) => {
+          // new tasks array created, results in re-render and componentDidUpdate in various components
           const tasks = oldState.tasks.filter((taskObj) => taskObj.id !== task.id);
           const categories = oldState.categories;
           if (categories[task.category] - 1 <= 0) {
@@ -122,6 +139,10 @@ class App extends React.Component {
     
   }
 
+  /* Update task by:
+  - updating it in tasks API via PUT method on the task.id
+  - updates it in (tasks) and (categories) state
+  */
   updateTask = (task, prevCategory, isInCategories, isSameCategory) => {
     fetch(`api/v1/tasks/${task.id}`, 
     {
@@ -133,6 +154,7 @@ class App extends React.Component {
     }).then(() => { 
       this.setState((oldState) => {
         task.updated_at = new Date();
+        // new tasks array created, results in re-render and componentDidUpdate in various components
         let tasks = oldState.tasks.filter((t) => t.id !== task.id);
         let categories = oldState.categories;
         if (!isInCategories) {

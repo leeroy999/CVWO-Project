@@ -44,8 +44,9 @@ class Popup extends React.Component {
   render() {
     if (this.state.operation === "add" || this.state.operation === "update") {
       return (
-        <Modal open = {this.state.open} 
-          onClose = {() => this.state.operation === "add" ? this.handleCancel(true) : this.handleCancel(false)}>
+        <Modal closeIcon closeOnDimmerClick = {false}
+          open = {this.state.open}
+          onClose = {this.handleCancel}>
           <Form style = {{padding: '20px'}}>
             <FormField>
               {this.state.operation === "add" 
@@ -77,34 +78,34 @@ class Popup extends React.Component {
             {this.state.operation === "add"
               ? <Button type = 'submit' onClick = {() => this.handleSubmit("add")}>Submit</Button>
               : <Button type = 'submit' onClick = {() => this.handleSubmit("update")}>Submit</Button>}
-            <Button type = 'cancel' onClick = {() => this.handleCancel(false)}>Cancel</Button>
+            <Button type = 'cancel' onClick = {this.handleCancel}>Cancel</Button>
           </Form>
         </Modal>
       );
     } else if (this.state.operation === "show" || this.state.operation === "delete") {
       return (
-        <Modal style = {{padding: '20px'}} open = {this.state.open} 
-        onClose = {() => this.handleCancel(false)}>
+        <Modal closeIcon closeOnDimmerClick = {false}
+          style = {{padding: '20px'}} 
+          open = {this.state.open}
+          onClose = {this.handleCancel}>
           {this.state.operation === "delete" 
-            ? <h1 style = {{color: 'maroon'}}>Are you sure you want to delete this task?</h1>
-            : <div>
-                <Button floated = 'right' icon = 'window close' onClick = {() => this.handleCancel(false)}/>
-              </div>}
-          <div style = {{overflowWrap: 'break-word' }}>
+            ? <Modal.Header style = {{color: 'maroon'}}>Are you sure you want to delete this task?</Modal.Header>
+            : <div></div>}
+          <Modal.Content style = {{overflowWrap: 'break-word' }}>
             <h3>Task Title: {this.state.task}</h3>
             <p><b>Category: </b>{this.state.category}</p>
             <p><b>Description: </b>{this.state.description}</p>
-          </div>
+          </Modal.Content>
           {this.state.operation === "delete" 
-            ? <div>
+            ? <Modal.Actions>
                 <Grid>
                   <GridColumn textAlign="center">
                     <Button type = 'yes' onClick = {this.handleDelete}>Yes</Button>
-                    <Button type = 'no' onClick = {() => this.handleCancel(false)}>No</Button>
+                    <Button type = 'no' onClick = {this.handleCancel}>No</Button>
                   </GridColumn>
                 </Grid>
-              </div>
-            : <div>
+              </Modal.Actions>
+            : <Modal.Actions>
                 <Grid>
                   <GridColumn textAlign="center">
                     <Button type = 'edit' onClick = {() => this.props.updateOpen(this.props.popup.task)}>
@@ -115,8 +116,7 @@ class Popup extends React.Component {
                     </Button>
                   </GridColumn>
                 </Grid>
-              </div>}
-          
+              </Modal.Actions>}
         </Modal>
       )
 
@@ -162,14 +162,11 @@ class Popup extends React.Component {
         this.props.categories[this.state.category],
         this.props.popup.task.category === this.state.category);
       this.clearState();
-      this.props.closePopup();
-    }
+      this.props.closePopup();}
   }
 
-  handleCancel = (keepState) => {
-    if (!keepState) {
-      this.clearState();
-    }
+  handleCancel = () => {
+    this.clearState();
     this.props.closePopup();
   }
 
