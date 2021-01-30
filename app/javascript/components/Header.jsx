@@ -60,6 +60,8 @@ class Header extends React.Component {
     }
 
     // method to check if arr1 elements and obj2 keys are the same
+    // Parameters: (Array, Object)
+    // Return: Boolean
     keyEqual = (arr1, obj2) => {
         let bool = true;
         for (let i = 0; i < arr1.length; i++) {

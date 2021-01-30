@@ -33,6 +33,7 @@ class Body extends React.Component {
 
   // filters task based on the category chosen in Header (passed as props by App.jsx)
   // Parameters: task --> Object
+  // Returns: Boolean
   handleFilter = (task) => {
     return (this.state.category === "") || (task.category === this.state.category);
   }
