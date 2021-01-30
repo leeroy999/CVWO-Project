@@ -4,10 +4,11 @@ import { Menu, Icon, MenuItem, Dropdown, Sticky } from 'semantic-ui-react'
 class Header extends React.Component {
 
     state = {
-        categories : [],
+        categories : [], // array of category objects: for Dropdown categories for category filtering {key: i, text: category, value: i}
     }
     
-    componentDidUpdate(prevProps){
+    // updates categories state if props have change in length or change in categories
+    componentDidUpdate(){
         if (Object.keys(this.props.categories).length !== Object.keys(this.state.categories).length
             || !this.keyEqual(this.state.categories, this.props.categories)){
             const options = [];
@@ -20,6 +21,8 @@ class Header extends React.Component {
         }
     }
 
+    // Header menu render
+    // Layout: Task Manager (clickable -> links to '/') | Categories dropdown | Add Task button
     render () {
         return (
             <Sticky>
@@ -46,6 +49,7 @@ class Header extends React.Component {
         );
     }
 
+    // Handler for change in category dropdown selection
     handleChange = (e, {value}) => {
         if (Number.isInteger(value)) {
             const category = this.state.categories[value].text;
@@ -55,6 +59,7 @@ class Header extends React.Component {
         }
     }
 
+    // method to check if arr1 elements and obj2 keys are the same
     keyEqual = (arr1, obj2) => {
         let bool = true;
         for (let i = 0; i < arr1.length; i++) {

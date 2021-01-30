@@ -8,6 +8,8 @@ class Body extends React.Component {
     category: "" // category for filtering, from props
   }
 
+  // updates state when props change
+  // Parameters: prevProps --> Object
   componentDidUpdate(prevProps){
     if (this.props.tasks !== prevProps.tasks ||
       this.props.category !== prevProps.category){
@@ -18,6 +20,7 @@ class Body extends React.Component {
     }
   }
 
+  // renders list of tasks from latest to earliest (reverse order)
   render() {
     return (
       <div style = {{padding: '20px' }}>
@@ -28,10 +31,19 @@ class Body extends React.Component {
     );
   }
 
+  // filters task based on the category chosen in Header (passed as props by App.jsx)
+  // Parameters: task --> Object
   handleFilter = (task) => {
     return (this.state.category === "") || (task.category === this.state.category);
   }
 
+  /* 
+    - Formats task into buttons, showing: date | task title | edit button | delete button
+    - Date is formatted as DD/Month/YYYY
+    - Edit and delete button links to props functions in App.jsx, while task title opens Popup (modal)
+    
+    Parameters: task --> Object
+  */
   showTask = (task) => {
     const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"];
@@ -68,8 +80,7 @@ class Body extends React.Component {
           </Grid>
       </div>
     );
-}
-
+  }
 }
 
 export default Body;

@@ -4,14 +4,15 @@ import { Modal, Form, FormField, TextArea, Input, Button, Dropdown, Icon, Grid, 
 class Popup extends React.Component {
 
   state = {
-    open: false,
-    operation: "",
-    task: "",
-    category: "",
-    description: "",
-    categories: []
+    open: false, // controls whether Modal is open or close
+    operation: "", // type of operation controls type of modal shown: "add", "update", "show", "delete"
+    task: "", // task title (if any) to be shown in Modal
+    category: "", // category (if any) to be shown in Modal
+    description: "", // description (if any) to be shown in Modal
+    categories: [] // array of category objects: for Dropdown categories for category filtering. {text: category, value: category}
   }
 
+  // updates state when props change
   componentDidUpdate(prevProps){
     if (this.props.popup.open !== prevProps.popup.open || 
       this.props.popup.operation !== prevProps.popup.operation){
@@ -40,9 +41,10 @@ class Popup extends React.Component {
     }
   }
 
-  // different popup operations: add, update, show, delete
+  // renders different Modal for different popup operations: add, update, show, delete
   render() {
     if (this.state.operation === "add" || this.state.operation === "update") {
+      // "add" and "update" creates a form with inputs: Task Title, Category and Description
       return (
         <Modal closeIcon closeOnDimmerClick = {false}
           open = {this.state.open}
@@ -75,21 +77,23 @@ class Popup extends React.Component {
                 value = {this.state.description}
                 onChange = {this.handleChange}/>
             </FormField>
-            {this.state.operation === "add"
-              ? <Button type = 'submit' onClick = {() => this.handleSubmit("add")}>Submit</Button>
-              : <Button type = 'submit' onClick = {() => this.handleSubmit("update")}>Submit</Button>}
+            <Button type = 'submit' onClick = {() => this.handleSubmit(this.state.operation)}>Submit</Button>
             <Button type = 'cancel' onClick = {this.handleCancel}>Cancel</Button>
           </Form>
         </Modal>
       );
     } else if (this.state.operation === "show" || this.state.operation === "delete") {
+      /* 
+        "show" and "delete" creates a popup prompt with the details of the task, as well as button actions:
+          - show: Edit, Delete, or Cancel(Close Icon on top right corner)
+          - delete: Yes or No (cancels deletion of task)
+      */
       return (
         <Modal closeIcon closeOnDimmerClick = {false}
-          style = {{padding: '20px'}} 
           open = {this.state.open}
           onClose = {this.handleCancel}>
           {this.state.operation === "delete" 
-            ? <Modal.Header style = {{color: 'maroon'}}>Are you sure you want to delete this task?</Modal.Header>
+            ? <Modal.Header style = {{color: 'maroon', textAlign: 'center'}}>Are you sure you want to delete this task?</Modal.Header>
             : <div></div>}
           <Modal.Content style = {{overflowWrap: 'break-word' }}>
             <h3>Task Title: {this.state.task}</h3>
@@ -119,24 +123,14 @@ class Popup extends React.Component {
               </Modal.Actions>}
         </Modal>
       )
-
     } else {
+      // ERROR
       return null;
     }
   }
 
-  handleChange = (e, data) => {
-    this.setState({
-      [data.name]: data.value
-    });
-  }
-
-  handleAddition = (e, { value }) => {
-    this.setState((oldState) => ({
-      categories: [{ text: value, value }, ...oldState.categories],
-    }));
-  }
-
+  // Removes all input by user
+  // state changes: task, category, description
   clearState = () => {
     this.setState({
       task: "",
@@ -145,14 +139,35 @@ class Popup extends React.Component {
     });
   }
 
-  // calls props to addTask and close popup
-  // clears task, category and description
+  // Handler for input changes in form, under "add" and "update" operations
+  // state changes: task, category, description
+  handleChange = (e, data) => {
+    this.setState({
+      [data.name]: data.value
+    });
+  }
+
+  // Handler for adding new categories for dropdown in form, under "add" and "update" operations
+  handleAddition = (e, { value }) => {
+    this.setState((oldState) => ({
+      categories: [{ text: value, value }, ...oldState.categories],
+    }));
+  }
+
+  // Handler for submitting form, under "add" and "update" operations. Clears state and closes Modal after operations.
   handleSubmit = (op) => {
     if (op === "add") {
       this.props.addTask(this.state.task, this.state.category, this.state.description);
       this.clearState();
       this.props.closePopup();
-    } else {
+    } else if (op === "update"){
+      /*
+        updateTask Parameters:
+          task: updated fields in the form, namely the TASK TITLE, CATEGORY, and DESCRIPTION. Includes ID. --> Object
+          prevCategory: previous category before it was updated --> String
+          isInCategories: checks if the updated category was part of the list of categories. Returns truthy/falsy value. --> Integer/undefined
+          isSameCategory: checks if the updated category is the same is the previous caregory. --> Boolean
+      */
       this.props.updateTask({
         id: this.props.popup.task.id,
         title: this.state.task, 
@@ -162,14 +177,19 @@ class Popup extends React.Component {
         this.props.categories[this.state.category],
         this.props.popup.task.category === this.state.category);
       this.clearState();
-      this.props.closePopup();}
+      this.props.closePopup();
+    } else {
+      // ERROR
+    }
   }
 
+  // Handler for cancelling or closing of Modal
   handleCancel = () => {
     this.clearState();
     this.props.closePopup();
   }
 
+  // Handler for deleting task
   handleDelete = () => {
     this.props.deleteTask(this.props.popup.task);
     this.clearState();

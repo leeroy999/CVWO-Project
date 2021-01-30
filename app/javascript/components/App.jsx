@@ -59,6 +59,7 @@ class App extends React.Component {
   }
 
   // Setter for (category) state, for use to filter categories in Body component
+  // Parameters: cat --> String
   handleCategory = (cat) => {
     this.setState({
       category: cat
@@ -67,10 +68,10 @@ class App extends React.Component {
 
   // Setter for (popup) state, for use in Popup component
   /* Parameters:
-      open: toggles opening of the Modal in Popup component
-      operation: changes the type of form to be opened by the Modal in Popup component
+      open: toggles opening of the Modal in Popup component --> Boolean
+      operation: changes the type of form to be opened by the Modal in Popup component --> String
         --> CRUD OPERATIONS: (add, show, update, delete)
-      task: sets the fields in the form, namely the TASK TITLE, CATEGORY, and DESCRIPTION
+      task: sets the fields in the form, namely the TASK TITLE, CATEGORY, and DESCRIPTION --> Object
   */
   handlePopup = (open, operation, task) => {
     this.setState({
@@ -79,8 +80,13 @@ class App extends React.Component {
   }
 
   /* Create task by 
-  - adding it to tasks API via POST method
-  - adding it to (categories) and (tasks) state
+    - adding it to tasks API via POST method
+    - adding it to (categories) and (tasks) state
+
+    Parameters: 
+      task --> String
+      category --> String
+      description --> String
   */
   addTask = (task, category, description) => {
     let body = JSON.stringify({task: {title: task, description: description, category: category}});
@@ -109,8 +115,11 @@ class App extends React.Component {
   }
 
   /* Destroy task by:
-  - deleting it from tasks API via DELETE method on the task.id
-  - removing it from (tasks) and (categories) state
+    - deleting it from tasks API via DELETE method on the task.id
+    - removing it from (tasks) and (categories) state
+
+    Parameters:
+      task --> Object
   */
   deleteTask = (task) => {
     fetch(`/api/v1/tasks/${task.id}`, 
@@ -140,8 +149,14 @@ class App extends React.Component {
   }
 
   /* Update task by:
-  - updating it in tasks API via PUT method on the task.id
-  - updates it in (tasks) and (categories) state
+    - updating it in tasks API via PUT method on the task.id
+    - updates it in (tasks) and (categories) state
+
+    Parameters:
+      task: updated fields in the form, namely the TASK TITLE, CATEGORY, and DESCRIPTION. Includes ID. --> Object
+      prevCategory: previous category before it was updated --> String
+      isInCategories: checks if the updated category was part of the list of categories. Returns truthy/falsy value. --> Integer/undefined
+      isSameCategory: checks if the updated category is the same is the previous caregory. --> Boolean
   */
   updateTask = (task, prevCategory, isInCategories, isSameCategory) => {
     fetch(`api/v1/tasks/${task.id}`, 
@@ -173,7 +188,6 @@ class App extends React.Component {
     })
     .catch((error) => alert(error));
   }
-
 }
 
 export default App;
